@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
-"""THE PASSAGE POST — entrypoint (Akun 19, News Image 20261125).
+"""Deliver the finished Passage Post page to /output/entry.png.
 
-entry.png is the finished page and is not redrawn here. Running
-this program copies it, byte for byte, to /output/entry.png.
-Standard library only.
+The page itself — entry.png, sitting beside this file — is the
+entry; this script is only the courier. It reads the page's
+bytes and writes them out again at the destination, untouched.
+Nothing is recomputed and nothing is redrawn. Standard library
+only.
 """
-import os
-import shutil
+from pathlib import Path
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+ENTRY = Path(__file__).resolve().parent / "entry.png"
+DEST = Path("/output/entry.png")
 
 
-def main():
-    src = os.path.join(HERE, "entry.png")
-    os.makedirs("/output", exist_ok=True)
-    dst = os.path.join("/output", "entry.png")
-    shutil.copyfile(src, dst)
-    print("wrote", dst, os.path.getsize(dst), "bytes")
+def deliver() -> None:
+    payload = ENTRY.read_bytes()
+    DEST.parent.mkdir(parents=True, exist_ok=True)
+    DEST.write_bytes(payload)
+    print(f"delivered {DEST} ({len(payload)} bytes)")
 
 
 if __name__ == "__main__":
-    main()
+    deliver()
